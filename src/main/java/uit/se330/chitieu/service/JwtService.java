@@ -17,7 +17,7 @@ public class JwtService {
 
     public String generateToken(String userId, String email) {
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + 24 * 60 * 60); // 1 ngay
+        Date expiry = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 1 ngay
         SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()
@@ -38,6 +38,10 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public String extractUserId(String token) {
+        return extractClaims(token).get("userId", String.class);
     }
 
     public String extractEmail(String token) {

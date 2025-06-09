@@ -31,14 +31,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
-        String path = request.getServletPath();
-        System.out.println(path);
-
-        if (path.startsWith("/api/user") || path.startsWith("/api/currency")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             try {
@@ -46,12 +38,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     String email = jwtService.extractEmail(token);
                     User user = userService.findByEmail(email);
 
+                    String userId = jwtService.extractUserId(token);
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                             user, null, new ArrayList<>());
+                    auth.setDetails(userId);
+
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             } catch (Exception ex) {
-                // log error
+                System.out.println(ex.getMessage());
             }
         }
 

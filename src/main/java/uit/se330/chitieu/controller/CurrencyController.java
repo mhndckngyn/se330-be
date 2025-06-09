@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uit.se330.chitieu.entity.Currency;
-import uit.se330.chitieu.model.AbcDto;
 import uit.se330.chitieu.service.CurrencyService;
 
 import java.util.List;
@@ -19,7 +18,6 @@ public class CurrencyController {
     @GetMapping
     public ResponseEntity<List<Currency>> getCurrency() {
         List<Currency> currencies = currencyService.getCurrencies();
-
         return ResponseEntity.ok(currencies);
     }
 
@@ -30,10 +28,5 @@ public class CurrencyController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(currency);
-    }
-
-    @PostMapping
-    public ResponseEntity<?> createCurrency(@RequestBody AbcDto dto) {
-        return ResponseEntity.ok("abc");
     }
 }
