@@ -72,7 +72,7 @@ public class AccountService {
         return true;
     }
 
-    private Account getAccountByIdAndUserId(String accountId, String userId) {
+    public Account getAccountByIdAndUserId(String accountId, String userId) {
         UUID userUUID = UUID.fromString(userId);
         UUID accountUUID = UUID.fromString(accountId);
         Optional<Account> optional = accountRepository.findByIdAndUserid_Id(accountUUID, userUUID);

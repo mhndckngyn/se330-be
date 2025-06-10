@@ -1,0 +1,56 @@
+package uit.se330.chitieu.repository.specifications;
+
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.jpa.domain.Specification;
+import uit.se330.chitieu.entity.Account;
+import uit.se330.chitieu.entity.Category;
+import uit.se330.chitieu.entity.Expense;
+import uit.se330.chitieu.model.record.RecordQuery;
+
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ExpenseSpecifications {
+    public static Specification<Expense> withFilters(RecordQuery query) {
+        return (root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Join with Account and Category
+            Join<Expense, Account> accountJoin = root.join("accountid");
+            Join<Expense, Category> categoryJoin = root.join("categoryid", JoinType.LEFT);
+
+            // Filter by accountId list or userId
+            if (query.accountIds == null || query.accountIds.isEmpty()) {
+                predicates.add(cb.equal(accountJoin.get("userid"), query.userId));
+            } else {
+                predicates.add(accountJoin.get("id").in(query.accountIds));
+            }
+
+            // Filter by categoryIds
+            if (query.categoryIds != null && !query.categoryIds.isEmpty()) {
+                predicates.add(categoryJoin.get("id").in(query.categoryIds));
+            }
+
+            // Filter by startDate
+            if (query.startDate != null) {
+                Instant start = query.startDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+                predicates.add(cb.greaterThanOrEqualTo(root.get("createdat"), start));
+            }
+
+            // Filter by endDate
+            if (query.endDate != null) {
+                Instant end = query.endDate.atTime(LocalTime.MAX).toInstant(ZoneOffset.UTC);
+                predicates.add(cb.lessThanOrEqualTo(root.get("createdat"), end));
+            }
+
+            cq.orderBy(cb.desc(root.get("createdat")));
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+}
