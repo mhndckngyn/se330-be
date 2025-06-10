@@ -8,7 +8,6 @@ import uit.se330.chitieu.entity.Expense;
 import uit.se330.chitieu.model.record.RecordQuery;
 import uit.se330.chitieu.model.record.expense.ExpenseCreateDto;
 import uit.se330.chitieu.model.record.expense.ExpenseUpdateDto;
-import uit.se330.chitieu.repository.AccountRepository;
 import uit.se330.chitieu.repository.ExpenseRepository;
 import uit.se330.chitieu.repository.specifications.ExpenseSpecifications;
 

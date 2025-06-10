@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import uit.se330.chitieu.entity.Account;
 import uit.se330.chitieu.entity.Category;
 import uit.se330.chitieu.entity.Expense;
+import uit.se330.chitieu.entity.Income;
 import uit.se330.chitieu.model.record.RecordQuery;
 
 import java.time.Instant;
@@ -15,8 +16,8 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExpenseSpecifications {
-    public static Specification<Expense> withFilters(RecordQuery query) {
+public class IncomeSpecifications {
+    public static Specification<Income> withFilters(RecordQuery query) {
         return (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
