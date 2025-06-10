@@ -4,9 +4,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
-import uit.se330.chitieu.entity.Account;
-import uit.se330.chitieu.entity.Category;
-import uit.se330.chitieu.entity.Income;
+import uit.se330.chitieu.entity.*;
 import uit.se330.chitieu.model.record.RecordQuery;
 
 import java.time.Instant;
@@ -15,19 +13,24 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IncomeSpecifications {
-    public static Specification<Income> withFilters(RecordQuery query) {
+public class TransferSpecifications {
+    public static Specification<Transfer> withFilters(RecordQuery query) {
         return (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            // Join with Account and Category
-            Join<Income, Account> accountJoin = root.join("accountid");
-            Join<Income, Category> categoryJoin = root.join("categoryid", JoinType.LEFT);
+            // Join with Source and Target Accounts, and Category
+            Join<Transfer, Account> sourceAccountJoin = root.join("sourceaccountid");
+            Join<Transfer, Account> targetAccountJoin = root.join("targetaccountid");
+            Join<Transfer, Category> categoryJoin = root.join("categoryid", JoinType.LEFT);
 
-            predicates.add(cb.equal(accountJoin.get("userid"), query.userId));
+            predicates.add(cb.equal(sourceAccountJoin.get("userid"), query.userId));
+            predicates.add(cb.equal(targetAccountJoin.get("userid"), query.userId));
 
+            // Filter by accountIds - transfer must involve at least one of the specified accounts
             if (query.accountIds != null && !query.accountIds.isEmpty()) {
-                predicates.add(accountJoin.get("id").in(query.accountIds));
+                Predicate sourceAccountPredicate = sourceAccountJoin.get("id").in(query.accountIds);
+                Predicate targetAccountPredicate = targetAccountJoin.get("id").in(query.accountIds);
+                predicates.add(cb.or(sourceAccountPredicate, targetAccountPredicate));
             }
 
             // Filter by categoryIds

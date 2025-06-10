@@ -1,18 +1,17 @@
 package uit.se330.chitieu.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uit.se330.chitieu.entity.Income;
+import uit.se330.chitieu.model.record.RecordParams;
 import uit.se330.chitieu.model.record.RecordQuery;
 import uit.se330.chitieu.model.record.income.IncomeCreateDto;
 import uit.se330.chitieu.model.record.income.IncomeUpdateDto;
 import uit.se330.chitieu.service.IncomeService;
 import uit.se330.chitieu.util.SecurityUtil;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -35,15 +34,11 @@ public class IncomeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Income>> getIncomesWithParams(
-            @RequestParam(required = false) List<String> accountIds,
-            @RequestParam(required = false) List<String> categoryIds,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)
+    public ResponseEntity<List<Income>> getIncomesWithParams(RecordParams params)
     {
         String userId = SecurityUtil.getCurrentUserId();
 
-        RecordQuery query = new RecordQuery(userId, accountIds, categoryIds, startDate, endDate);
+        RecordQuery query = new RecordQuery(params, userId);
         List<Income> incomes = incomeService.getIncomesWithQuery(query);
 
         return ResponseEntity.ok(incomes);

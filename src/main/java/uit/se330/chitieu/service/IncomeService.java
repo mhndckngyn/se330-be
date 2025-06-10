@@ -11,7 +11,6 @@ import uit.se330.chitieu.model.record.income.IncomeUpdateDto;
 import uit.se330.chitieu.repository.IncomeRepository;
 import uit.se330.chitieu.repository.specifications.IncomeSpecifications;
 
-import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +51,7 @@ public class IncomeService {
 
         income.setTitle(dto.getTitle());
         income.setDescription(dto.getDescription());
-        income.setAmount(new BigDecimal(dto.getAmount()));
+        income.setAmount(dto.getAmount());
 
         if (dto.getDate() != null) {
             income.setCreatedat(dto.getDate().atStartOfDay().toInstant(ZoneOffset.UTC));

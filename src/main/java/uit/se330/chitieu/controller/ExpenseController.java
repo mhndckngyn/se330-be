@@ -1,18 +1,17 @@
 package uit.se330.chitieu.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uit.se330.chitieu.entity.Expense;
+import uit.se330.chitieu.model.record.RecordParams;
 import uit.se330.chitieu.model.record.RecordQuery;
 import uit.se330.chitieu.model.record.expense.ExpenseCreateDto;
 import uit.se330.chitieu.model.record.expense.ExpenseUpdateDto;
 import uit.se330.chitieu.service.ExpenseService;
 import uit.se330.chitieu.util.SecurityUtil;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -35,15 +34,11 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Expense>> getExpensesWithParams(
-            @RequestParam(required = false) List<String> accountIds,
-            @RequestParam(required = false) List<String> categoryIds,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)
+    public ResponseEntity<List<Expense>> getExpensesWithParams(RecordParams params)
     {
         String userId = SecurityUtil.getCurrentUserId();
 
-        RecordQuery query = new RecordQuery(userId, accountIds, categoryIds, startDate, endDate);
+        RecordQuery query = new RecordQuery(params, userId);
         List<Expense> expenses = expenseService.getExpensesWithQuery(query);
 
         return ResponseEntity.ok(expenses);

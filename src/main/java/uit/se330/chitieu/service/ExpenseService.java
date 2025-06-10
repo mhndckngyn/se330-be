@@ -11,7 +11,6 @@ import uit.se330.chitieu.model.record.expense.ExpenseUpdateDto;
 import uit.se330.chitieu.repository.ExpenseRepository;
 import uit.se330.chitieu.repository.specifications.ExpenseSpecifications;
 
-import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +26,9 @@ public class ExpenseService {
     private AccountService accountService;
 
     public Expense createExpense(String userId, ExpenseCreateDto dto) {
-        Account account = accountService.getAccountByIdAndUserId(dto.getAccountId().toString(), userId);
+        Account account = accountService.getAccountByIdAndUserId(
+                dto.getAccountId().toString(),
+                userId);
         if (account == null) {
             return null;
         }
@@ -53,7 +54,7 @@ public class ExpenseService {
 
         expense.setTitle(dto.getTitle());
         expense.setDescription(dto.getDescription());
-        expense.setAmount(new BigDecimal(dto.getAmount()));
+        expense.setAmount(dto.getAmount());
 
         if (dto.getDate() != null) {
             expense.setCreatedat(dto.getDate().atStartOfDay().toInstant(ZoneOffset.UTC));
