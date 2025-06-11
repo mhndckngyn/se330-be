@@ -1,5 +1,6 @@
 package uit.se330.chitieu.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import uit.se330.chitieu.entity.Expense;
 import uit.se330.chitieu.model.record.RecordParams;
 import uit.se330.chitieu.model.record.RecordQuery;
 import uit.se330.chitieu.model.record.expense.ExpenseCreateDto;
+import uit.se330.chitieu.model.record.expense.ExpenseReadDto;
 import uit.se330.chitieu.model.record.expense.ExpenseUpdateDto;
 import uit.se330.chitieu.service.ExpenseService;
 import uit.se330.chitieu.util.SecurityUtil;
@@ -22,30 +24,30 @@ public class ExpenseController {
     private ExpenseService expenseService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Expense> getExpense(@PathVariable("id") String id) {
+    public ResponseEntity<ExpenseReadDto> getExpense(@PathVariable("id") String id) {
         String userId = SecurityUtil.getCurrentUserId();
-        Expense expense = expenseService.getExpense(userId, id);
+        ExpenseReadDto result = expenseService.getExpense(userId, id);
 
-        if (expense == null) {
+        if (result == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(expense);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<Expense>> getExpensesWithParams(RecordParams params)
+    public ResponseEntity<List<ExpenseReadDto>> getExpensesWithParams(RecordParams params)
     {
         String userId = SecurityUtil.getCurrentUserId();
 
         RecordQuery query = new RecordQuery(params, userId);
-        List<Expense> expenses = expenseService.getExpensesWithQuery(query);
+        List<ExpenseReadDto> expenses = expenseService.getExpensesWithQuery(query);
 
         return ResponseEntity.ok(expenses);
     }
 
     @PostMapping
-    public ResponseEntity<Expense> createExpense(@RequestBody ExpenseCreateDto dto) {
+    public ResponseEntity<Expense> createExpense(@Valid @RequestBody ExpenseCreateDto dto) {
         String userId = SecurityUtil.getCurrentUserId();
         Expense expense = expenseService.createExpense(userId, dto);
 
@@ -59,7 +61,7 @@ public class ExpenseController {
     @PutMapping("/{id}")
     public ResponseEntity<Expense> updateExpense(
             @PathVariable("id") String id,
-            @RequestBody ExpenseUpdateDto dto)
+            @Valid @RequestBody ExpenseUpdateDto dto)
     {
         String userId = SecurityUtil.getCurrentUserId();
         Expense expense = expenseService.updateExpense(userId, id, dto);

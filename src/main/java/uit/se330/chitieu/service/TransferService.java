@@ -7,6 +7,7 @@ import uit.se330.chitieu.entity.Category;
 import uit.se330.chitieu.entity.Transfer;
 import uit.se330.chitieu.model.record.RecordQuery;
 import uit.se330.chitieu.model.record.transfer.TransferCreateDto;
+import uit.se330.chitieu.model.record.transfer.TransferReadDto;
 import uit.se330.chitieu.model.record.transfer.TransferUpdateDto;
 import uit.se330.chitieu.repository.TransferRepository;
 import uit.se330.chitieu.repository.specifications.TransferSpecifications;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TransferService {
@@ -42,13 +44,17 @@ public class TransferService {
         return transferRepository.save(transfer);
     }
 
-    public Transfer getTransfer(String userId, String transferId) {
-        // TODO: use ReadDto
-        return getTransferByIdAndUserId(transferId, userId);
+    public TransferReadDto getTransfer(String userId, String transferId) {
+        Transfer transfer = getTransferByIdAndUserId(transferId, userId);
+        if (transfer == null) {
+            return null;
+        }
+        return new TransferReadDto(transfer);
     }
 
-    public List<Transfer> getTransfersWithQuery(RecordQuery query) {
-        return transferRepository.findAll(TransferSpecifications.withFilters(query));
+    public List<TransferReadDto> getTransfersWithQuery(RecordQuery query) {
+        List<Transfer> transfers =  transferRepository.findAll(TransferSpecifications.withFilters(query));
+        return transfers.stream().map(TransferReadDto::new).collect(Collectors.toList());
     }
 
     public Transfer updateTransfer(String userId, String transferId, TransferUpdateDto dto) {

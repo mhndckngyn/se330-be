@@ -7,6 +7,7 @@ import uit.se330.chitieu.entity.Category;
 import uit.se330.chitieu.entity.Income;
 import uit.se330.chitieu.model.record.RecordQuery;
 import uit.se330.chitieu.model.record.income.IncomeCreateDto;
+import uit.se330.chitieu.model.record.income.IncomeReadDto;
 import uit.se330.chitieu.model.record.income.IncomeUpdateDto;
 import uit.se330.chitieu.repository.IncomeRepository;
 import uit.se330.chitieu.repository.specifications.IncomeSpecifications;
@@ -15,6 +16,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class IncomeService {
@@ -34,13 +36,18 @@ public class IncomeService {
         return incomeRepository.save(income);
     }
 
-    public Income getIncome(String userId, String incomeId) {
-        // TODO: use ReadDto
-        return getIncomeByIdAndUserId(incomeId, userId);
+    public IncomeReadDto getIncome(String userId, String incomeId) {
+        Income income = getIncomeByIdAndUserId(incomeId, userId);
+        if (income == null) {
+            return null;
+        }
+
+        return new IncomeReadDto(income);
     }
 
-    public List<Income> getIncomesWithQuery(RecordQuery query) {
-        return incomeRepository.findAll(IncomeSpecifications.withFilters(query));
+    public List<IncomeReadDto> getIncomesWithQuery(RecordQuery query) {
+        List<Income> incomes = incomeRepository.findAll(IncomeSpecifications.withFilters(query));
+        return incomes.stream().map(IncomeReadDto::new).collect(Collectors.toList());
     }
 
     public Income updateIncome(String userId, String incomeId, IncomeUpdateDto dto) {

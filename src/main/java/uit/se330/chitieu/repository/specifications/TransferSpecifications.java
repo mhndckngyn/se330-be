@@ -23,8 +23,8 @@ public class TransferSpecifications {
             Join<Transfer, Account> targetAccountJoin = root.join("targetaccountid");
             Join<Transfer, Category> categoryJoin = root.join("categoryid", JoinType.LEFT);
 
-            predicates.add(cb.equal(sourceAccountJoin.get("userid"), query.userId));
-            predicates.add(cb.equal(targetAccountJoin.get("userid"), query.userId));
+            predicates.add(cb.equal(sourceAccountJoin.get("userid").get("id"), query.userId));
+            predicates.add(cb.equal(targetAccountJoin.get("userid").get("id"), query.userId));
 
             // Filter by accountIds - transfer must involve at least one of the specified accounts
             if (query.accountIds != null && !query.accountIds.isEmpty()) {

@@ -8,6 +8,7 @@ import uit.se330.chitieu.entity.Transfer;
 import uit.se330.chitieu.model.record.RecordParams;
 import uit.se330.chitieu.model.record.RecordQuery;
 import uit.se330.chitieu.model.record.transfer.TransferCreateDto;
+import uit.se330.chitieu.model.record.transfer.TransferReadDto;
 import uit.se330.chitieu.model.record.transfer.TransferUpdateDto;
 import uit.se330.chitieu.service.TransferService;
 import uit.se330.chitieu.util.SecurityUtil;
@@ -22,23 +23,23 @@ public class TransferController {
     private TransferService transferService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Transfer> getTransfer(@PathVariable("id") String id) {
+    public ResponseEntity<TransferReadDto> getTransfer(@PathVariable("id") String id) {
         String userId = SecurityUtil.getCurrentUserId();
 
-        Transfer transfer = transferService.getTransfer(userId, id);
+        TransferReadDto result = transferService.getTransfer(userId, id);
 
-        if (transfer == null) {
+        if (result == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(transfer);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<Transfer>> getTransfersWithParams(RecordParams params) {
+    public ResponseEntity<List<TransferReadDto>> getTransfersWithParams(RecordParams params) {
         String userId = SecurityUtil.getCurrentUserId();
 
         RecordQuery query = new RecordQuery(params, userId);
-        List<Transfer> transfers = transferService.getTransfersWithQuery(query);
+        List<TransferReadDto> transfers = transferService.getTransfersWithQuery(query);
 
         return ResponseEntity.ok(transfers);
     }

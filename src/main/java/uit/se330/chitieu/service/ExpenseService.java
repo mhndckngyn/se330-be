@@ -7,6 +7,7 @@ import uit.se330.chitieu.entity.Category;
 import uit.se330.chitieu.entity.Expense;
 import uit.se330.chitieu.model.record.RecordQuery;
 import uit.se330.chitieu.model.record.expense.ExpenseCreateDto;
+import uit.se330.chitieu.model.record.expense.ExpenseReadDto;
 import uit.se330.chitieu.model.record.expense.ExpenseUpdateDto;
 import uit.se330.chitieu.repository.ExpenseRepository;
 import uit.se330.chitieu.repository.specifications.ExpenseSpecifications;
@@ -15,6 +16,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ExpenseService {
@@ -37,13 +39,14 @@ public class ExpenseService {
         return expenseRepository.save(expense);
     }
 
-    public Expense getExpense(String userId, String expenseId) {
-        // TODO: use ReadDto
-        return getExpenseByIdAndUserId(expenseId, userId);
+    public ExpenseReadDto getExpense(String userId, String expenseId) {
+        Expense expense = getExpenseByIdAndUserId(expenseId, userId);
+        return new ExpenseReadDto(expense);
     }
 
-    public List<Expense> getExpensesWithQuery(RecordQuery query) {
-        return expenseRepository.findAll(ExpenseSpecifications.withFilters(query));
+    public List<ExpenseReadDto> getExpensesWithQuery(RecordQuery query) {
+        List<Expense> expenses = expenseRepository.findAll(ExpenseSpecifications.withFilters(query));
+        return expenses.stream().map(ExpenseReadDto::new).collect(Collectors.toList());
     }
 
     public Expense updateExpense(String userId, String expenseId, ExpenseUpdateDto dto) {
