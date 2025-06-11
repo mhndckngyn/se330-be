@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ExpenseSpecifications {
     public static Specification<Expense> withFilters(RecordQuery query) {
@@ -27,12 +28,20 @@ public class ExpenseSpecifications {
             predicates.add(cb.equal(accountJoin.get("userid").get("id"), query.userId));
 
             if (query.accountIds != null && !query.accountIds.isEmpty()) {
-                predicates.add(accountJoin.get("id").in(query.accountIds));
+                List<UUID> accountUUIDs = query.accountIds.stream()
+                        .map(UUID::fromString)
+                        .toList();
+
+                predicates.add(accountJoin.get("id").in(accountUUIDs));
             }
 
             // Filter by categoryIds
             if (query.categoryIds != null && !query.categoryIds.isEmpty()) {
-                predicates.add(categoryJoin.get("id").in(query.categoryIds));
+                List<UUID> categoryUUIDs = query.categoryIds.stream()
+                        .map(UUID::fromString)
+                        .toList();
+
+                predicates.add(categoryJoin.get("id").in(categoryUUIDs));
             }
 
             // Filter by startDate

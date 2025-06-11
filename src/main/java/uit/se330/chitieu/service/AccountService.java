@@ -8,7 +8,10 @@ import uit.se330.chitieu.model.account.AccountCreateDto;
 import uit.se330.chitieu.model.account.AccountReadDto;
 import uit.se330.chitieu.model.account.AccountUpdateDto;
 import uit.se330.chitieu.repository.AccountRepository;
+import uit.se330.chitieu.repository.ExpenseRepository;
+import uit.se330.chitieu.repository.IncomeRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,6 +22,12 @@ public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private IncomeRepository incomeRepository;
+
+    @Autowired
+    private ExpenseRepository expenseRepository;
 
     public Account createAccount(String userId, AccountCreateDto accountCreateDto) {
         Account account = new Account();
@@ -34,10 +43,20 @@ public class AccountService {
 
     public AccountReadDto getAccount(String userId, String accountId) {
         Account account = getAccountByIdAndUserId(userId, accountId);
+
         if (account == null) {
             return null;
         }
-        return new AccountReadDto(account.getId(), account.getName(), account.getBalance());
+
+        BigDecimal totalIncome = incomeRepository.sumIncomeByAccountId(account.getId());
+        BigDecimal totalExpense = expenseRepository.sumExpenseByAccountId(account.getId());
+
+        return new AccountReadDto(
+                account.getId(),
+                account.getName(),
+                account.getBalance(),
+                totalIncome,
+                totalExpense);
     }
 
     public List<AccountReadDto> getAccountsByUserId(String userId) {
@@ -45,10 +64,17 @@ public class AccountService {
         List<Account> accounts = accountRepository.findByUserid_Id(uuid);
 
         return accounts.stream()
-                .map(account -> new AccountReadDto(
-                        account.getId(),
-                        account.getName(),
-                        account.getBalance()))
+                .map(account -> {
+                    BigDecimal totalIncome = incomeRepository.sumIncomeByAccountId(account.getId());
+                    BigDecimal totalExpense = expenseRepository.sumExpenseByAccountId(account.getId());
+                    return new AccountReadDto(
+                            account.getId(),
+                            account.getName(),
+                            account.getBalance(),
+                            totalIncome,
+                            totalExpense
+                    );
+                })
                 .collect(Collectors.toList());
     }
 

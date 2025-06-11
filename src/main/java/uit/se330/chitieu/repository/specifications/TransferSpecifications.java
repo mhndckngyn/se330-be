@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TransferSpecifications {
     public static Specification<Transfer> withFilters(RecordQuery query) {
@@ -28,14 +29,22 @@ public class TransferSpecifications {
 
             // Filter by accountIds - transfer must involve at least one of the specified accounts
             if (query.accountIds != null && !query.accountIds.isEmpty()) {
-                Predicate sourceAccountPredicate = sourceAccountJoin.get("id").in(query.accountIds);
-                Predicate targetAccountPredicate = targetAccountJoin.get("id").in(query.accountIds);
+                List<UUID> accountUUIDs = query.accountIds.stream()
+                        .map(UUID::fromString)
+                        .toList();
+
+                Predicate sourceAccountPredicate = sourceAccountJoin.get("id").in(accountUUIDs);
+                Predicate targetAccountPredicate = targetAccountJoin.get("id").in(accountUUIDs);
                 predicates.add(cb.or(sourceAccountPredicate, targetAccountPredicate));
             }
 
             // Filter by categoryIds
             if (query.categoryIds != null && !query.categoryIds.isEmpty()) {
-                predicates.add(categoryJoin.get("id").in(query.categoryIds));
+                List<UUID> categoryUUIDs = query.categoryIds.stream()
+                        .map(UUID::fromString)
+                        .toList();
+
+                predicates.add(categoryJoin.get("id").in(categoryUUIDs));
             }
 
             // Filter by startDate

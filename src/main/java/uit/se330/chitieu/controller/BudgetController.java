@@ -39,10 +39,10 @@ public class BudgetController {
     }
 
     @PostMapping
-    public ResponseEntity<Budget> createBudget(@RequestBody BudgetCreateDto dto) {
+    public ResponseEntity<BudgetReadDto> createBudget(@RequestBody BudgetCreateDto dto) {
         String userId = SecurityUtil.getCurrentUserId();
         Budget budget = budgetService.createBudget(userId, dto);
-        return ResponseEntity.ok(budget);
+        return ResponseEntity.ok(new BudgetReadDto(budget));
     }
 
     @PutMapping("/{id}")

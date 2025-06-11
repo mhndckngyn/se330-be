@@ -27,6 +27,7 @@ public class BudgetCreateDto {
         budget.setPeriod(this.period);
         budget.setEnddate(this.startDate.plusDays(this.period));
         budget.setBudgetlimit(this.budgetLimit);
+        budget.setCurrent(BigDecimal.valueOf(0));
 
         User user = new User();
         user.setId(userId);

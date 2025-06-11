@@ -12,4 +12,6 @@ public class AccountReadDto {
     public UUID id;
     public String name;
     public BigDecimal balance;
+    public BigDecimal totalIncome;
+    public BigDecimal totalExpense;
 }
