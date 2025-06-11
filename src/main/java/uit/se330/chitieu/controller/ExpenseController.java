@@ -47,7 +47,7 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ResponseEntity<Expense> createExpense(@Valid @RequestBody ExpenseCreateDto dto) {
+    public ResponseEntity<ExpenseReadDto> createExpense(@Valid @RequestBody ExpenseCreateDto dto) {
         String userId = SecurityUtil.getCurrentUserId();
         Expense expense = expenseService.createExpense(userId, dto);
 
@@ -55,7 +55,7 @@ public class ExpenseController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        return ResponseEntity.ok(expense);
+        return ResponseEntity.ok(new ExpenseReadDto(expense));
     }
 
     @PutMapping("/{id}")

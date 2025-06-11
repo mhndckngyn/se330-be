@@ -47,7 +47,7 @@ public class IncomeController {
     }
 
     @PostMapping
-    public ResponseEntity<Income> createIncome(@Valid @RequestBody IncomeCreateDto dto) {
+    public ResponseEntity<IncomeReadDto> createIncome(@Valid @RequestBody IncomeCreateDto dto) {
         String userId = SecurityUtil.getCurrentUserId();
         Income income = incomeService.createIncome(userId, dto);
 
@@ -55,7 +55,7 @@ public class IncomeController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        return ResponseEntity.ok(income);
+        return ResponseEntity.ok(new IncomeReadDto(income));
     }
 
     @PutMapping("/{id}")

@@ -45,7 +45,7 @@ public class TransferController {
     }
 
     @PostMapping
-    public ResponseEntity<Transfer> createTransfer(@RequestBody TransferCreateDto dto) {
+    public ResponseEntity<TransferReadDto> createTransfer(@RequestBody TransferCreateDto dto) {
         String userId = SecurityUtil.getCurrentUserId();
         Transfer transfer = transferService.createTransfer(userId, dto);
 
@@ -53,7 +53,7 @@ public class TransferController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        return ResponseEntity.ok(transfer);
+        return ResponseEntity.ok(new TransferReadDto(transfer));
     }
 
     @PutMapping("/{id}")

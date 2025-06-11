@@ -25,7 +25,11 @@ public class TransferReadDto extends RecordReadDto {
         this.accountName = transfer.getSourceaccountid().getName();
         this.targetAccountId = transfer.getTargetaccountid().getId();
         this.targetAccountName = transfer.getTargetaccountid().getName();
-        this.categoryId = transfer.getCategoryid().getId();
-        this.categoryName = transfer.getCategoryid().getName();
+
+        var categoryId = transfer.getCategoryid();
+        if (categoryId != null) {
+            this.categoryId = categoryId.getId();
+            this.categoryName = categoryId.getName();
+        }
     }
 }

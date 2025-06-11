@@ -13,7 +13,11 @@ public class ExpenseReadDto extends RecordReadDto {
         this.updatedAt = expense.getUpdatedat();
         this.accountId = expense.getAccountid().getId();
         this.accountName = expense.getAccountid().getName();
-        this.categoryId = expense.getCategoryid().getId();
-        this.categoryName = expense.getCategoryid().getName();
+
+        var categoryId = expense.getCategoryid();
+        if (categoryId != null) {
+            this.categoryId = categoryId.getId();
+            this.categoryName = categoryId.getName();
+        }
     }
 }

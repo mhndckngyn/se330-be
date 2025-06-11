@@ -13,7 +13,11 @@ public class IncomeReadDto extends RecordReadDto {
         this.updatedAt = income.getUpdatedat();
         this.accountId = income.getAccountid().getId();
         this.accountName = income.getAccountid().getName();
-        this.categoryId = income.getCategoryid().getId();
-        this.categoryName = income.getCategoryid().getName();
+
+        var categoryId =  income.getCategoryid();
+        if (categoryId != null) {
+            this.categoryId = categoryId.getId();
+            this.categoryName = categoryId.getName();
+        }
     }
 }
