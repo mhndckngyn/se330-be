@@ -24,7 +24,7 @@ public class ExpenseSpecifications {
             Join<Expense, Account> accountJoin = root.join("accountid");
             Join<Expense, Category> categoryJoin = root.join("categoryid", JoinType.LEFT);
 
-            predicates.add(cb.equal(accountJoin.get("userid"), query.userId));
+            predicates.add(cb.equal(accountJoin.get("userid").get("id"), query.userId));
 
             if (query.accountIds != null && !query.accountIds.isEmpty()) {
                 predicates.add(accountJoin.get("id").in(query.accountIds));
