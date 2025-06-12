@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uit.se330.chitieu.entity.Budget;
-import uit.se330.chitieu.model.budget.BudgetCreateDto;
-import uit.se330.chitieu.model.budget.BudgetReadDto;
-import uit.se330.chitieu.model.budget.BudgetUpdateDto;
+import uit.se330.chitieu.model.budget.*;
 import uit.se330.chitieu.service.BudgetService;
 import uit.se330.chitieu.util.SecurityUtil;
 
@@ -31,9 +29,10 @@ public class BudgetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BudgetReadDto>> getBudgets() {
+    public ResponseEntity<List<BudgetReadDto>> getBudgets(BudgetParams params) {
         String userId = SecurityUtil.getCurrentUserId();
-        List<BudgetReadDto> budgets = budgetService.getBudgetsByUserId(userId);
+        BudgetQuery query = new BudgetQuery(params, userId);
+        List<BudgetReadDto> budgets = budgetService.getBudgetsWithQuery(query);
 
         return ResponseEntity.ok(budgets);
     }

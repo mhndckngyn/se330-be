@@ -29,6 +29,8 @@ public class BudgetReadDto {
         this.current = budget.getCurrent();
         this.budgetLimit = budget.getBudgetlimit();
         this.period = budget.getPeriod();
-        this.categoryId = budget.getCategoryid().getId();
+        if (budget.getCategoryid() != null) {
+            this.categoryId = budget.getCategoryid().getId();
+        }
     }
 }

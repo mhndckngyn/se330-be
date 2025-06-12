@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import uit.se330.chitieu.entity.Budget;
 import uit.se330.chitieu.entity.Category;
 import uit.se330.chitieu.model.budget.BudgetCreateDto;
+import uit.se330.chitieu.model.budget.BudgetQuery;
 import uit.se330.chitieu.model.budget.BudgetReadDto;
 import uit.se330.chitieu.model.budget.BudgetUpdateDto;
 import uit.se330.chitieu.repository.BudgetRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,9 +37,20 @@ public class BudgetService {
         return new BudgetReadDto(budget);
     }
 
-    public List<BudgetReadDto> getBudgetsByUserId(String userId) {
-        UUID userUUID = UUID.fromString(userId);
-        List<Budget> budgets = budgetRepository.findByUserid_Id(userUUID);
+    public List<BudgetReadDto> getBudgetsWithQuery(BudgetQuery query) {
+        UUID userUUID = UUID.fromString(query.getUserId());
+        List<Budget> budgets;
+        List<String> categoryIds = query.getCategoryIds();
+
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            List<UUID> categoryUUIDs = categoryIds.stream()
+                    .map(UUID::fromString)
+                    .collect(Collectors.toList());
+
+            budgets = budgetRepository.findByUserid_IdAndCategoryid_IdIn(userUUID, categoryUUIDs);
+        } else {
+            budgets = budgetRepository.findByUserid_Id(userUUID);
+        }
 
         return budgets.stream()
                 .map(BudgetReadDto::new)
