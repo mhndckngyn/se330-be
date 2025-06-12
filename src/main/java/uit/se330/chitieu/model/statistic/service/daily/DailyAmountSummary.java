@@ -1,4 +1,4 @@
-package uit.se330.chitieu.model.statistic.service;
+package uit.se330.chitieu.model.statistic.service.daily;
 
 import lombok.Getter;
 
