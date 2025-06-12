@@ -9,6 +9,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -46,6 +48,19 @@ public class Account {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userid", nullable = false)
     private User userid;
+
+    @OneToMany(mappedBy = "accountid", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Income> incomes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "accountid", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Expense> expenses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sourceaccountid", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transfer> outgoingTransfers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "targetaccountid", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transfer> incomingTransfers = new ArrayList<>();
+
 
     @PrePersist
     public void prePersist() {

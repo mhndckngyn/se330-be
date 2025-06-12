@@ -42,7 +42,7 @@ public class AccountService {
     }
 
     public AccountReadDto getAccount(String userId, String accountId) {
-        Account account = getAccountByIdAndUserId(userId, accountId);
+        Account account = getAccountByIdAndUserId(accountId, userId);
 
         if (account == null) {
             return null;
@@ -89,7 +89,7 @@ public class AccountService {
     }
 
     public boolean deleteAccount(String userId, String accountId) {
-        Account account = getAccountByIdAndUserId(userId, accountId);
+        Account account = getAccountByIdAndUserId(accountId, userId);
         if (account == null) {
             return false;
         }

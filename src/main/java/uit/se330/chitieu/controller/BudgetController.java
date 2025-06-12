@@ -31,7 +31,7 @@ public class BudgetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BudgetReadDto>> getBudgetsByUserId() {
+    public ResponseEntity<List<BudgetReadDto>> getBudgets() {
         String userId = SecurityUtil.getCurrentUserId();
         List<BudgetReadDto> budgets = budgetService.getBudgetsByUserId(userId);
 
