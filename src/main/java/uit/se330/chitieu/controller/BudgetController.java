@@ -8,6 +8,7 @@ import uit.se330.chitieu.model.budget.*;
 import uit.se330.chitieu.service.BudgetService;
 import uit.se330.chitieu.util.SecurityUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,7 @@ public class BudgetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BudgetReadDto>> getBudgets(BudgetParams params) {
+    public ResponseEntity<List<BudgetReadDto>> getBudgets(@ModelAttribute BudgetParams params) {
         String userId = SecurityUtil.getCurrentUserId();
         BudgetQuery query = new BudgetQuery(params, userId);
         List<BudgetReadDto> budgets = budgetService.getBudgetsWithQuery(query);

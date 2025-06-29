@@ -21,14 +21,14 @@ public class StatisticController {
     private StatisticService statisticService;
 
     @GetMapping
-    public ResponseEntity<DailyFinancialReport> getStatistic(@RequestParam Integer duration) {
+    public ResponseEntity<DailyFinancialReport> getDailyStatistic(@RequestParam Integer duration) {
         UUID userId = UUID.fromString(SecurityUtil.getCurrentUserId());
         DailyFinancialReport result = statisticService.getFinancialReport(userId, duration);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/monthly")
-    public ResponseEntity<MonthlyFinancialReport> getMonthlyFinancialReport() {
+    public ResponseEntity<MonthlyFinancialReport> getMonthlyStatistic() {
         UUID userId = UUID.fromString(SecurityUtil.getCurrentUserId());
         MonthlyFinancialReport report = statisticService.getLastTwelveMonthsFinancialReport(userId);
         return ResponseEntity.ok(report);
